@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Nyssa Berlanga</title>
+    <link>/</link>
+    <description>Recent content on Nyssa Berlanga</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Fri, 13 Dec 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>New to Working with Python</title>
+      <link>/blog/pythonwork/</link>
+      <pubDate>Fri, 13 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/pythonwork/</guid>
+      <description>This semester, I had the privilege to work with the application Python after having learned more in depth tools about RStudio. Throughout my college career, I had only coded in R, and learning a new language that was more widely known by a larger group of people was exciting to me, as with more practice, I’d be able to build up my coding language in one that is more readily available to others.</description>
+    </item>
+    
+    <item>
+      <title>New to Working with Python</title>
+      <link>/pythonwork/</link>
+      <pubDate>Fri, 13 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/pythonwork/</guid>
+      <description>This semester, I had the privilege to work with the application Python after having learned more in depth tools about RStudio. Throughout my college career, I had only coded in R, and learning a new language that was more widely known by a larger group of people was exciting to me, as with more practice, I’d be able to build up my coding language in one that is more readily available to others.</description>
+    </item>
+    
+    <item>
+      <title>Projects</title>
+      <link>/projects/</link>
+      <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>
+      
+      <guid>/projects/</guid>
+      <description>Projects These are the projects I worked on this semester:
+ Project-1 Project-2  </description>
+    </item>
+    
+    <item>
+      <title>Project 1</title>
+      <link>/project-1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/project-1/</guid>
+      <description>Nyssa Berlanga, npb439
+Introduction: The datasets chosen, that I originally abbreviated as “dataNPI”, and “dataTMA”, were two different types of personality tests, known as the Narcissistic Personality Inventory (NPI), and the Taylor Manifest Anxiety Scale (TMA), respectively. The NPI is based off of the trait narcissism, where a comparison to the Greek god Narcissus was used to introduce the study. This test aimed to measure this personality trait among people based off of a Narcissistic Personality Disorder highlighted in the Diagnostic and Statistical Manual of Mental Disorders (DSM-III); however, it is not an indicator of a mental illness.</description>
+    </item>
+    
+    <item>
+      <title>Project 2: Modeling, Testing, and Predicting</title>
+      <link>/project-2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/project-2/</guid>
+      <description>0. (5 pts) Introduce your dataset and each of your variables (or just your main variables if you have lots) in a paragraph.  The dataset chosen was one that was referred to as “womensrole.” In this survey from the years 1974-1975, males and females were recorded on their agreement or disagreement with the statement “Women should take care of running their homes and leave running the country up to men.</description>
+    </item>
+    
+  </channel>
+</rss>

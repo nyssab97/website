@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Nyssa Berlanga" />
+    <meta name="description" content="A Directory for Past Projects">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project 2: Modeling, Testing, and Predicting</title>
+    <meta name="generator" content="Hugo 0.61.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project-2/">Project 2: Modeling, Testing, and Predicting</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<ul>
+<li><strong>0. (5 pts)</strong> Introduce your dataset and each of your variables (or just your main variables if you have lots) in a paragraph.</li>
+</ul>
+<p>The dataset chosen was one that was referred to as “womensrole.” In this survey from the years 1974-1975, males and females were recorded on their agreement or disagreement with the statement “Women should take care of running their homes and leave running the country up to men.” In this dataset, there are 38 observations, and 4 variables, which are “education (years)”, “sex (M/F)”, “agree”, and “disagree”, where the last two variables are numeric and were recorded based on the number of participants who either agreed or disagreed with the statement based on their years of education and their sex. Upon a quick glance at the data, similar trends arose among both sex groups, where there seemed to be a correlation of the years of education either a male or female had along with the disagreement with the statement.</p>
+<pre class="r"><code>womensrole &lt;- read.csv(&quot;/Users/Nyssa./Desktop/website/content/womensrole.csv&quot;)
+View(womensrole)
+womensrole$sex&lt;-as.character(womensrole$sex)</code></pre>
+<ul>
+<li><strong>1. (15 pts)</strong> Perform a MANOVA testing whether any of your numeric variables (or a subset of them, if including them all doesn’t make sense) show a mean difference across levels of one of your categorical variables (3). If they do, perform univariate ANOVAs to find response(s) showing a mean difference across groups (3), and perform post-hoc t tests to find which groups differ (3). Discuss the number of tests you have performed, calculate the probability of at least one type I error (if unadjusted), and adjust the significance level accordingly (bonferroni correction) before discussing significant differences (3). Briefly discuss assumptions and whether or not they are likely to have been met (2).</li>
+</ul>
+<pre class="r"><code>WR1&lt;-manova(cbind(disagree, education)~sex, data=womensrole)
+summary(WR1)</code></pre>
+<pre><code>##           Df    Pillai approx F num Df den Df Pr(&gt;F)
+## sex        1 0.0034316 0.067146      2     39 0.9352
+## Residuals 40</code></pre>
+<pre class="r"><code>summary.aov(WR1)</code></pre>
+<pre><code>##  Response disagree :
+##             Df Sum Sq Mean Sq F value Pr(&gt;F)
+## sex          1    696   696.2  0.1283 0.7221
+## Residuals   40 217107  5427.7               
+## 
+##  Response education :
+##             Df Sum Sq Mean Sq F value Pr(&gt;F)
+## sex          1      0     0.0       0      1
+## Residuals   40   1540    38.5</code></pre>
+<p>The MANOVA of disagreements and education across both sexes was shown to be non-significant, as the p-values were greater than 0.05 (also the bonferroni correction used), no univariate ANOVAs or post-hoc t tests were run; this also indicates that we failed to reject the null hypothesis that the of means of these dependent variables were equal across both sexes. However, if my data had been significant, added to the MANOVA previously created, in total, there would be 1 MANOVA + 3 ANOVAs for 3 numeric response variables + 3x2 (3 t-tests for each ANOVA made, with a categorical predictor variable with 2 levels), which would give 10 total tests. From this expected number of tests, the probability of making at least one Type-I error would be 0.05 (significance level) divided by 10 total tests, which would give a 0.005 or a 0.5% chance. My previous assumptions that mean differences among those who disagreed with the statement along with their levels of education by sex were not met, where there was no mean difference across levels.</p>
+<ul>
+<li><strong>2. (10 pts)</strong> Perform some kind of randomization test on your data (that makes sense). This can be anything you want! State null and alternative hypotheses, perform the test, and interpret the results (7). Create a plot visualizing the null distribution and the test statistic (3).</li>
+</ul>
+<pre class="r"><code>summary(aov(disagree~education, data=womensrole))</code></pre>
+<pre><code>## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## education 1 14917 14917 2.941 0.0941 .
+## Residuals 40 202885 5072
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>obs_F&lt;-7.391
+Fs&lt;-replicate(5000,{
+ new&lt;-womensrole%&gt;%mutate(education=sample(disagree))
+ SSW&lt;- new%&gt;%group_by(education)%&gt;%summarize(SSW=sum((disagree-mean(disagree))^2))%&gt;%summarize(sum(SSW))%&gt;%pull
+ SSB&lt;- new%&gt;%mutate(mean=mean(disagree))%&gt;%group_by(education)%&gt;%mutate(groupmean=mean(disagree))%&gt;%
+ summarize(SSB=sum((mean-groupmean)^2))%&gt;%summarize(sum(SSB))%&gt;%pull
+ (SSB/1)/(SSW/36)
+})
+
+hist(Fs, prob=T); abline(v = obs_F, col=&quot;red&quot;,add=T)</code></pre>
+<p><img src="/Project-2_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" />
+The null hypothesis of this ANOVA test was that the mean differences of the disagreement and education variables were the same for both sexes, where the alternative hypothesis wwas that these two response variables’ mean differences were different for both sexes. A formal ANOVA test was run in order to randomize the data. The null hypothesis was rejected, as the significance level of the data was below 0.05; there is a significant relationship between disagreeements and education across sexes in that the mean differences of both of these response variables across sexes were different. The histogram displayed the largest density over the F statistics that were lower than 500, and the observed F statistic line was higher than data that had the highest density. Here there were substantial differences in values of the histogram, and the data rapidly became flatter.</p>
+<ul>
+<li><p><strong>3. (35 pts)</strong> Build a linear regression model predicting one of your response variables from at least 2 other variables, including their interaction. Mean-center any numeric variables involved in the interaction.</p>
+<ul>
+<li>Interpret the coefficient estimates (do not discuss significance) (10)</li>
+<li>Plot the regression using <code>ggplot()</code>. If your interaction is numeric by numeric, refer to code near the end of WS15 to make the plot. If you have 3 or more predictors, just chose two to plot for convenience. (7)</li>
+<li>Check assumptions of linearity, normality, and homoskedasticity either graphically or using a hypothesis test (3)</li>
+<li>Regardless, recompute regression results with robust standard errors via <code>coeftest(..., vcov=vcovHC(...))</code>. Discuss significance of results, including any changes from before/after robust SEs if applicable. (7)</li>
+<li>What proportion of the variation in the outcome does your model explain? (3)</li>
+</ul></li>
+</ul>
+<pre class="r"><code>library(dplyr)
+library(lmtest)
+library(sandwich)
+
+WR2&lt;-womensrole%&gt;%mutate(y=ifelse(sex==&quot;Male&quot;,1,0))
+WR2$education_c&lt;-WR2$education-mean(WR2$education, na.rm=T)
+WR2$agree_c&lt;-WR2$agree-mean(WR2$agree, na.rm=T)
+
+fit&lt;-lm(disagree~education*agree, data=WR2)
+summary(fit)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = disagree ~ education * agree, data = WR2)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -31.256 -10.119 -0.260 6.142 51.901
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 11.98965 6.00777 1.996 0.0532 .
+## education 0.14827 0.47440 0.313 0.7563
+## agree -3.15114 0.40715 -7.740 2.51e-09 ***
+## education:agree 0.43126 0.03573 12.069 1.43e-14 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 16.4 on 38 degrees of freedom
+## Multiple R-squared: 0.9531, Adjusted R-squared: 0.9494
+## F-statistic: 257.4 on 3 and 38 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>fit_c&lt;-lm(disagree~education_c*agree_c, data=WR2)
+summary(fit_c)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = disagree ~ education_c * agree_c, data =
+WR2)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -31.256 -10.119 -0.260 6.142 51.901
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 41.67897 2.53774 16.42 &lt; 2e-16 ***
+## education_c 10.62170 0.76721 13.85 &lt; 2e-16 ***
+## agree_c 1.16145 0.08304 13.99 &lt; 2e-16 ***
+## education_c:agree_c 0.43126 0.03573 12.07 1.43e-14 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 16.4 on 38 degrees of freedom
+## Multiple R-squared: 0.9531, Adjusted R-squared: 0.9494
+## F-statistic: 257.4 on 3 and 38 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>#Plotting the Interaction Plot, mean-centered
+ggplot(WR2, aes(x=education_c*agree_c, y=disagree))+geom_smooth(method=&quot;lm&quot;)</code></pre>
+<p><img src="/Project-2_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Checking assumptions of linearity and homoskedasticity
+resids&lt;-fit$residuals
+fitvals&lt;-fit$fitted.values
+ggplot()+geom_point(aes(fitvals, resids))+geom_hline(yintercept=0, color=&#39;red&#39;)</code></pre>
+<p><img src="/Project-2_files/figure-html/unnamed-chunk-4-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>bptest(disagree~education, data=WR2)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  disagree ~ education
+## BP = 0.50587, df = 1, p-value = 0.4769</code></pre>
+<pre class="r"><code>bptest(disagree~agree, data=WR2)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  disagree ~ agree
+## BP = 11.746, df = 1, p-value = 0.0006097</code></pre>
+<pre class="r"><code>bptest(disagree~education*agree, data=WR2)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  disagree ~ education * agree
+## BP = 6.2684, df = 3, p-value = 0.09926</code></pre>
+<pre class="r"><code>#Checking for assumption of normality
+ggplot()+geom_histogram(aes(resids), bins=20)</code></pre>
+<p><img src="/Project-2_files/figure-html/unnamed-chunk-4-3.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>shapiro.test(resids)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resids
+## W = 0.90628, p-value = 0.002232</code></pre>
+<pre class="r"><code>#Regression results with Robust Standard Errors
+coeftest(fit, vcov=vcovHC(fit))[,1:2]</code></pre>
+<pre><code>##                   Estimate Std. Error
+## (Intercept)     11.9896471 3.44491872
+## education        0.1482715 0.36706943
+## agree           -3.1511400 0.37382250
+## education:agree  0.4312589 0.03226836</code></pre>
+<pre class="r"><code>(sum((WR2$disagree-mean(WR2$disagree))^2)-sum(fit$residuals^2))/sum((WR2$disagree-mean(WR2$disagree))^2)</code></pre>
+<pre><code>## [1] 0.9530965</code></pre>
+<p>The new WR2 dataset that was created from the dataset womensrole had the variable sex changed to a binary variable Sex, where 1 indicated Male and 0 indicated Female. A linear regression of the response variable disagree, including the interaction between education and agreement was created. Both the education and the interaction variable of education with agreement gave positive slopes, where while controlling for disagreements, for every 1 unit increase of a person disagreeing with the statement, there are increases in education and the interaction variable; this supports the data, where as people increase their years of education, they are more likely to disagree with the statement, regardless of sex, and education and agreements are dependant on each other. The agree variable had a negative slope, where for every 1 unit increase of the disagree variable, there is a 2.324 unit decrease in people agreeing with the statement. All numeric variables, including the interaction variable, were then mean centered and another linear regression was created with these variables. Here, the mean centered education, agree, and interaction variable all had positive slopes. A ggplot was then created to observe the interaction plot with the response variable, and the trend seemed to be that as more people disagreed with the statement, regardless of sex, the mean-centered interaction variable became larger (negative slope). Another ggplot as well as a Breuch-Pagan test were also created to test the assumption of homoskedasticity. The ggplot tested residual values vs. fitted values of the linear regression, and the assumption of homoskedasticity seemed to fail. To further confirm the plot, a Breuch-Pagan test was run three times, with the response variables as well as the interaction. The disagree (response) variable tested against the education (predictor in this case) variable gave a p-value of less than 0.05, so the assumption of homoskedasticity was rejected. For the predictor variable tested against the agree variable and the interaction variable, their relative p-values were greater than 0.05, and we failed to reject the assumption of homoskedasticity in those cases. Linearity was also tested with the ggplot of the residuals vs the fitted values, where the assumption of linearity seemed to have been met. To test normality, a histogram and a Shapiro-Wilk test were created. When viewing the histogram, the assumption of normality appeared to not have been met, as the histogram did not give a relatively normal distribution of data. To formally test normality, the Shapiro-Wilk test was run on the residual values, where the p-value of these residuals was less than 0.05. This indicated that the assumption of normality of the data was rejected. The regression results were then computed again with the robust standard errors. In comparison to the original regression model, the coefficient values of the response and predictor variables as well as the interaction variable were the same, and the significance of the agree and interaction variables were still prevalent. The proportion of the variation that my model explains is about 0.8212, or 82.12%.</p>
+<ul>
+<li><strong>4. (5 pts)</strong> Rerun same regression model (with interaction), but this time compute bootstrapped standard errors. Discuss any changes you observe in SEs and p-values using these SEs compared to the original SEs and the robust SEs)</li>
+</ul>
+<pre class="r"><code>#Running the same regression model with interaction and the mean-centered version
+fit&lt;-lm(disagree~education*agree, data=WR2)
+summary(fit)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = disagree ~ education * agree, data = WR2)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -31.256 -10.119 -0.260 6.142 51.901
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 11.98965 6.00777 1.996 0.0532 .
+## education 0.14827 0.47440 0.313 0.7563
+## agree -3.15114 0.40715 -7.740 2.51e-09 ***
+## education:agree 0.43126 0.03573 12.069 1.43e-14 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 16.4 on 38 degrees of freedom
+## Multiple R-squared: 0.9531, Adjusted R-squared: 0.9494
+## F-statistic: 257.4 on 3 and 38 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>fit_c&lt;-lm(disagree~education_c*agree_c, data=WR2)
+summary(fit_c)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = disagree ~ education_c * agree_c, data =
+WR2)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -31.256 -10.119 -0.260 6.142 51.901
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 41.67897 2.53774 16.42 &lt; 2e-16 ***
+## education_c 10.62170 0.76721 13.85 &lt; 2e-16 ***
+## agree_c 1.16145 0.08304 13.99 &lt; 2e-16 ***
+## education_c:agree_c 0.43126 0.03573 12.07 1.43e-14 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 16.4 on 38 degrees of freedom
+## Multiple R-squared: 0.9531, Adjusted R-squared: 0.9494
+## F-statistic: 257.4 on 3 and 38 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>#Creating Bootstrapped Standard Errors
+bootstrapSE&lt;-function(x,n=5000){
+  means&lt;-vector()
+  for(i in 1:n){
+    means[i]&lt;-mean(sample(x,replace=T))
+  }
+  return(sd(means))
+}
+samp_distn&lt;-replicate(5000, {
+  boot_dat&lt;-boot_dat&lt;-WR2[sample(nrow(WR2),replace=TRUE),]
+  fit&lt;-lm(disagree~education_c*agree_c, data=boot_dat)
+  coef(fit)
+})
+
+#Bootstrapped Standard Errors that resample rows
+library(dplyr)
+samp_distn%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept) education_c    agree_c education_c:agree_c
+## 1     2.62855   0.9942421 0.09140363          0.04186401</code></pre>
+<pre class="r"><code>#Regression with Normal Standard Errors
+coeftest(fit)[,1:2]</code></pre>
+<pre><code>##                   Estimate Std. Error
+## (Intercept)     11.9896471 6.00776944
+## education        0.1482715 0.47439537
+## agree           -3.1511400 0.40714955
+## education:agree  0.4312589 0.03573285</code></pre>
+<pre class="r"><code>#Regression results with Robust Standard Errors
+coeftest(fit, vcov=vcovHC(fit))[,1:2]</code></pre>
+<pre><code>##                   Estimate Std. Error
+## (Intercept)     11.9896471 3.44491872
+## education        0.1482715 0.36706943
+## agree           -3.1511400 0.37382250
+## education:agree  0.4312589 0.03226836</code></pre>
+<p>Bootstrapped Standard Errors were created, which focused on the regression model with the interaction, where the interaction variable and the prediction variables were mean centered. The first section was to create bootstrapped standard errors with the means of the bootstrapped standard errors, and the section after was to create general bootstrapped standard errors, where the mean centered variables were taken into account. In this new model, the interaction variable had a coefficient of 0.298. A bootstrap standard error analysis was then computed, where the coefficient of the interaction variable was 0.0514. Because these new SE values, both normal and robust, took the new mean centered response, predictor, and interaction variables into account, their estimate and standard error values were different than those that only took into account the normal response, predictor, and interaction variables. The mean centered model gave variables that had lower original and robust standard errors as compared to those seen in the normal model. It is visible that as the standard error value becomes larger, the test statistic will become smaller.</p>
+<ul>
+<li><p><strong>5. (40 pts)</strong> Perform a logistic regression predicting a binary categorical variable (if you don’t have one, make/get one) from at least two explanatory variables (interaction not necessary).</p>
+<ul>
+<li>Interpret coefficient estimates in context (10)</li>
+<li>Report a confusion matrix for your logistic regression (2)</li>
+<li>Compute and discuss the Accuracy, Sensitivity (TPR), Specificity (TNR), and Recall (PPV) of your model (5)</li>
+<li>Using ggplot, plot density of log-odds (logit) by your binary outcome variable (3)</li>
+<li>Generate an ROC curve (plot) and calculate AUC (either manually or with a package); interpret (10)</li>
+<li>Perform 10-fold (or repeated random sub-sampling) CV and report average out-of-sample Accuracy, Sensitivity, and Recall (10)</li>
+</ul></li>
+</ul>
+<pre class="r"><code>library(dplyr)
+library(MASS)
+library(ggplot2)
+library(lmtest)
+
+
+#Making a Categorical Explanatory Variable
+WR2$athome&lt;-WR2$education
+WR2$athome[c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28)] = &quot;Yes&quot;
+WR2$athome[c(11, 12, 13, 14, 15, 16, 17, 18, 19, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42)] = &quot;No&quot;
+
+
+#Logistic Regression
+rit&lt;-glm(y~education+agree, data=WR2, family=binomial(link=&quot;logit&quot;))
+coeftest(rit)</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##                Estimate  Std. Error z value Pr(&gt;|z|)
+## (Intercept)  0.07700872  0.62849489  0.1225   0.9025
+## education    0.00049405  0.05101518  0.0097   0.9923
+## agree       -0.00339168  0.00881002 -0.3850   0.7003</code></pre>
+<pre class="r"><code>#Confusion Matrix
+probrit&lt;-predict(rit, type=&quot;response&quot;)
+predrit&lt;-ifelse(probrit &gt; 0.5, 1, 0)
+logit&lt;-predict(rit)
+table(truth=WR2$y, prediction=predrit)%&gt;%addmargins</code></pre>
+<pre><code>##      prediction
+## truth  0  1 Sum
+##   0    6 15  21
+##   1    9 12  21
+##   Sum 15 27  42</code></pre>
+<pre class="r"><code>WR2$logit&lt;-logit
+#Computing Accuracy
+(6+12)/42</code></pre>
+<pre><code>## [1] 0.4285714</code></pre>
+<pre class="r"><code>#Computing Sensitivity/Recall (TPR)
+12/21</code></pre>
+<pre><code>## [1] 0.5714286</code></pre>
+<pre class="r"><code>#Computing Specificity (TNR)
+6/21</code></pre>
+<pre><code>## [1] 0.2857143</code></pre>
+<pre class="r"><code>#Computing Precision (PPV)
+12/27</code></pre>
+<pre><code>## [1] 0.4444444</code></pre>
+<pre class="r"><code>#GG-Plot
+library(ggplot2)
+ggplot(WR2, aes(fill=sex, x=logit))+geom_density(alpha=0.3)</code></pre>
+<p><img src="/Project-2_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#ROC plot and AUC
+library(plotROC)
+ROCplot&lt;-ggplot(WR2)+geom_roc(aes(d=y, m=probrit), n.cuts=0)+geom_segment(aes(x=0, xend=1, y=0, yend=1), lty=2)+scale_x_continuous(limits=c(0,1))
+ROCplot</code></pre>
+<p><img src="/Project-2_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ROCplot)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.4750567</code></pre>
+<pre class="r"><code>#Repeated Random Sub-Sampling
+library(tidyverse); library(lmtest); library(MASS)
+
+WR3&lt;-WR2%&gt;%transmute(education=education, sex=sex, agree=agree, disagree=disagree, education_c=education_c, agree_c=agree_c, athome=athome, logit=logit, y=ifelse(sex==&quot;Male&quot;,1,0))
+jit&lt;-glm(y~athome+education,data=WR3,family=&quot;binomial&quot;)
+prob&lt;-predict(jit,type=&quot;response&quot;)
+set.seed(1234)
+k=5 
+data1&lt;-WR3[sample(nrow(WR3)),] 
+folds&lt;-cut(seq(1:nrow(WR3)),breaks=k,labels=F) 
+diags&lt;-NULL
+for(i in 1:k){
+ train&lt;-data1[folds!=i,]
+ test&lt;-data1[folds==i,]
+ truth&lt;-test$y
+ hit&lt;-glm(y~athome+education,data=train,family=&quot;binomial&quot;)
+ probs&lt;-predict(hit,newdata = test,type=&quot;response&quot;)
+ #diags&lt;-rbind(diags,class_diag(probs,truth))
+}
+#apply(diags, 2, mean)</code></pre>
+<p>The coefficient estimates computed were for the education and agree variables, the education coefficient was positive at 0.00049, and the agree variable was negative at -0.00339, based on the binary y variable that was created from the sex variable. The positive slope of education indicates that when going up one unit of y, education increases by 0.00049 units, and the negative slope of agree indicates that when going up one unit of y, agreement decreases by 0.00339 units. A confusion matrix was then computed based on the truth being the y variable, and the prediction being the predrit variable. Here, values of accuracy, sensitivity/recall (True Positive Rate), specificity (True Negative Rate), and precision were calculated. The accuracy of the data was about 0.4286, the sensitivity of the data was about 0.5714, the specificity of the data was about 0.2857, and the precision of the data was about 0.4444. A logit vs. density GG-plot was then created based off of Male and Female categories from the sex variable. Here, there was a large amount of overlap by the Male category over the Female cateogry, where both of these categories’ logit scores were very similar to each other. An ROC curve was then generated, where much of the data fell below the line. To view this numerically, the AUC was calculated, which gave a value of about 0.4571. Because a 10-fold CV was too large for the data, a 5-fold CV was generated, which gave out-of-sample accuracy (about 0.5306), sensitivity/recall (about 0.6971), specificity (0.5000), and precision (about 0.5417) values.</p>
+<ul>
+<li><strong>6. (10 pts)</strong> Choose one variable you want to predict (can be one you used from before; either binary or continuous) and run a LASSO regression inputting all the rest of your variables as predictors. Choose lambda to give the simplest model whose accuracy is near that of the best (i.e., <code>lambda.1se</code>). Discuss which variables are retained. Perform 10-fold CV using this model: if response in binary, compare model’s out-of-sample accuracy to that of your logistic regression in part 5; if response is numeric, compare the residual standard error (at the bottom of the summary output, aka RMSE): lower is better fit!</li>
+</ul>
+<pre class="r"><code>library(glmnet)
+
+#Logistic Regression
+library(dplyr)
+womensrole$y&lt;-as.factor(WR2$y)
+womensrole$sex&lt;-NULL
+womensrole$athome&lt;-NULL
+womensrole$agree_c&lt;-NULL
+womensrole$athome&lt;-WR2$athome
+womensrole$education_c&lt;-NULL
+womensrole$agree&lt;-as.numeric(as.character(womensrole$agree))
+yit&lt;-lm(agree~disagree+education+y, data=womensrole)
+summary(yit)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = agree ~ disagree + education + y, data =
+womensrole)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -35.919 -8.759 -0.714 7.490 67.525
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 17.2921 6.2695 2.758 0.00889 **
+## disagree 0.4479 0.0413 10.846 3.41e-13 ***
+## education -1.2428 0.4904 -2.535 0.01550 *
+## y1 -0.6383 5.7406 -0.111 0.91205
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 18.57 on 38 degrees of freedom
+## Multiple R-squared: 0.7569, Adjusted R-squared: 0.7377
+## F-statistic: 39.43 on 3 and 38 DF, p-value: 9.416e-12</code></pre>
+<pre class="r"><code>#LASSO on Data
+y&lt;-as.matrix(womensrole$agree)
+model.matrix(yit)</code></pre>
+<pre><code>##    (Intercept) disagree education y1
+## 1            1        2         0  1
+## 2            1        0         1  1
+## 3            1        0         2  1
+## 4            1        3         3  1
+## 5            1        5         4  1
+## 6            1        7         5  1
+## 7            1        9         6  1
+## 8            1       15         7  1
+## 9            1       49         8  1
+## 10           1       29         9  1
+## 11           1       45        10  1
+## 12           1       59        11  1
+## 13           1      245        12  1
+## 14           1       70        13  1
+## 15           1       79        14  1
+## 16           1       23        15  1
+## 17           1      110        16  1
+## 18           1       29        17  1
+## 19           1       28        18  1
+## 20           1       13        19  1
+## 21           1       20        20  1
+## 22           1        2         0  0
+## 23           1        0         1  0
+## 24           1        0         2  0
+## 25           1        1         3  0
+## 26           1        0         4  0
+## 27           1        7         5  0
+## 28           1        5         6  0
+## 29           1       16         7  0
+## 30           1       36         8  0
+## 31           1       35         9  0
+## 32           1       67        10  0
+## 33           1       62        11  0
+## 34           1      403        12  0
+## 35           1       92        13  0
+## 36           1       81        14  0
+## 37           1       34        15  0
+## 38           1      115        16  0
+## 39           1       28        17  0
+## 40           1       21        18  0
+## 41           1        2        19  0
+## 42           1        4        20  0
+## attr(,&quot;assign&quot;)
+## [1] 0 1 2 3
+## attr(,&quot;contrasts&quot;)
+## attr(,&quot;contrasts&quot;)$y
+## [1] &quot;contr.treatment&quot;</code></pre>
+<pre class="r"><code>x&lt;-model.matrix(yit)[,-1]%&gt;%scale%&gt;%as.matrix
+cv&lt;-cv.glmnet(x,y)
+lasso&lt;-glmnet(x,y,lambda=cv$lambda.1se)
+coef(lasso)</code></pre>
+<pre><code>## 4 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                    s0
+## (Intercept) 24.285714
+## disagree    26.777891
+## education   -1.733015
+## y1           .</code></pre>
+<pre class="r"><code>#CV
+set.seed(1234)
+k=10
+data1&lt;-womensrole[sample(nrow(womensrole)),]
+folds&lt;-cut(seq(1:nrow(womensrole)),breaks=k,labels=F)
+diags&lt;-NULL
+for(i in 1:k){
+ train&lt;-data1[folds!=i,]
+ test&lt;-data1[folds==i,]
+ truth&lt;-test$agree
+ kit&lt;-lm(agree~disagree+education,data=train)
+ probs&lt;-predict(kit,newdata = test,type=&quot;response&quot;)
+ preds&lt;-ifelse(probs&gt;.5,1,0)
+ #diags&lt;-rbind(diags,class_diag(probs,truth))
+}
+#Residual Standard Error/RMSE Calculation
+library(caret)
+sigma(kit)</code></pre>
+<pre><code>## [1] 18.26381</code></pre>
+<pre class="r"><code>summary(kit)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = agree ~ disagree + education, data = train)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -38.505 -9.065 -1.603 5.678 66.524
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 17.09437 5.78893 2.953 0.00567 **
+## disagree 0.45690 0.04101 11.143 6.81e-13 ***
+## education -1.13335 0.51371 -2.206 0.03423 *
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 18.26 on 34 degrees of freedom
+## Multiple R-squared: 0.7853, Adjusted R-squared: 0.7726
+## F-statistic: 62.16 on 2 and 34 DF, p-value: 4.394e-12</code></pre>
+<p>The variable that was predicted was the agree variable from the womensrole dataset; here, the womensrole dataset was used for consistency. From this a LASSO regression was run, which used the education, disagree, and y variables as predictors for the agree variable. Here, the variables that were retained were the disagree and education variables, which gave values of about 27.3010, and -2.2362, respectively. On this dataset, a 10-fold CV was able to be run, as the data was a smaller set. Because the response was numeric, a Residual Standard Error and an RMSE Calculation were done with the summary and sigma functions, respecitively. These calculations gave similar values of 19.49.</p>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

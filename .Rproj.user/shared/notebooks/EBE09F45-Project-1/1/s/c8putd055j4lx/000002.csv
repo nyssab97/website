@@ -1,0 +1,2 @@
+"0","#Creating First GG Plot"
+"0","ggplot(firstnpitma6, aes(x=firstnpitma6$age2, y=firstnpitma6$mean_score.x))+geom_bar(stat=""summary"",aes(fill=firstnpitma6$age2))+ geom_errorbar(stat=""summary"", width=0.4) + labs(x=""Age Categories"", y=""Mean NPI Score"")+scale_fill_discrete() +ggtitle(""Mean NPI Scores vs. Age Categories"") +scale_y_continuous(breaks=c(0,2,4,6,8,10,12,14,16,18))"

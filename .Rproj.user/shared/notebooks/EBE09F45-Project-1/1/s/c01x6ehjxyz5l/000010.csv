@@ -1,0 +1,3 @@
+"0","#Using Dplyr Functions"
+"0","firstnpitma%>%select(-""elapse"")->firstnpitma2"
+"0","head(firstnpitma2)"

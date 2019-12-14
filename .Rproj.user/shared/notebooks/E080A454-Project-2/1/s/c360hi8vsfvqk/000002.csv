@@ -1,0 +1,3 @@
+"0","womensrole <- read.csv(""/Users/Nyssa./Desktop/website/content/womensrole.csv"")"
+"0","View(womensrole)"
+"0","womensrole$sex<-as.character(womensrole$sex)"

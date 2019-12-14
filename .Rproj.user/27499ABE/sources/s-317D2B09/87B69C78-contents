@@ -1,0 +1,265 @@
+---
+title: 'Project 2: Modeling, Testing, and Predicting'
+author: "Nyssa Berlanga"
+date: '11.26.19'
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+library(tidyverse)
+```
+- **0. (5 pts)** Introduce your dataset and each of your variables (or just your main variables if you have lots) in a paragraph.
+
+The dataset chosen was one that was referred to as "womensrole." In this survey from the years 1974-1975, males and females were recorded on their agreement or disagreement with the statement "Women should take care of running their homes and leave running the country up to men." In this dataset, there are 38 observations, and 4 variables, which are "education (years)", "sex (M/F)", "agree", and "disagree", where the last two variables are numeric and were recorded based on the number of participants who either agreed or disagreed with the statement based on their years of education and their sex. Upon a quick glance at the data, similar trends arose among both sex groups, where there seemed to be a correlation of the years of education either a male or female had along with the disagreement with the statement.
+```{R}
+womensrole <- read.csv("/Users/Nyssa./Desktop/website/content/womensrole.csv")
+View(womensrole)
+womensrole$sex<-as.character(womensrole$sex)
+```
+
+- **1. (15 pts)** Perform a MANOVA testing whether any of your numeric variables (or a subset of them, if including them all doesn't make sense) show a mean difference across levels of one of your categorical variables (3). If they do, perform univariate ANOVAs to find response(s) showing a mean difference across groups (3), and perform post-hoc t tests to find which groups differ (3). Discuss the number of tests you have performed, calculate the probability of at least one type I error (if unadjusted), and adjust the significance level accordingly (bonferroni correction) before discussing significant differences (3). Briefly discuss assumptions and whether or not they are likely to have been met (2).
+```{R}
+WR1<-manova(cbind(disagree, education)~sex, data=womensrole)
+summary(WR1)
+summary.aov(WR1)
+```
+The MANOVA of disagreements and education across both sexes was shown to be non-significant, as the p-values were greater than 0.05 (also the bonferroni correction used), no univariate ANOVAs or post-hoc t tests were run; this also indicates that we failed to reject the null hypothesis that the of means of these dependent variables were equal across both sexes. However, if my data had been significant, added to the MANOVA previously created, in total, there would be 1 MANOVA + 3 ANOVAs for 3 numeric response variables + 3x2 (3 t-tests for each ANOVA made, with a categorical predictor variable with 2 levels), which would give 10 total tests. From this expected number of tests, the probability of making at least one Type-I error would be 0.05 (significance level) divided by 10 total tests, which would give a 0.005 or a 0.5% chance. My previous assumptions that mean differences among those who disagreed with the statement along with their levels of education by sex were not met, where there was no mean difference across levels.
+
+- **2. (10 pts)** Perform some kind of randomization test on your data (that makes sense). This can be anything you want! State null and alternative hypotheses, perform the test, and interpret the results (7). Create a plot visualizing the null distribution and the test statistic (3).
+```{R}
+summary(aov(disagree~education, data=womensrole))
+
+obs_F<-7.391
+Fs<-replicate(5000,{
+ new<-womensrole%>%mutate(education=sample(disagree))
+ SSW<- new%>%group_by(education)%>%summarize(SSW=sum((disagree-mean(disagree))^2))%>%summarize(sum(SSW))%>%pull
+ SSB<- new%>%mutate(mean=mean(disagree))%>%group_by(education)%>%mutate(groupmean=mean(disagree))%>%
+ summarize(SSB=sum((mean-groupmean)^2))%>%summarize(sum(SSB))%>%pull
+ (SSB/1)/(SSW/36)
+})
+
+hist(Fs, prob=T); abline(v = obs_F, col="red",add=T)
+
+```
+The null hypothesis of this ANOVA test was that the mean differences of the disagreement and education variables were the same for both sexes, where the alternative hypothesis wwas that these two response variables' mean differences were different for both sexes. A formal ANOVA test was run in order to randomize the data. The null hypothesis was rejected, as the significance level of the data was below 0.05; there is a significant relationship between disagreeements and education across sexes in that the mean differences of both of these response variables across sexes were different. The histogram displayed the largest density over the F statistics that were lower than 500, and the observed F statistic line was higher than data that had the highest density. Here there were substantial differences in values of the histogram, and the data rapidly became flatter.
+
+- **3. (35 pts)** Build a linear regression model predicting one of your response variables from at least 2 other variables, including their interaction. Mean-center any numeric variables involved in the interaction.
+
+    - Interpret the coefficient estimates (do not discuss significance) (10)
+    - Plot the regression using `ggplot()`. If your interaction is numeric by numeric, refer to code near the end of WS15 to make the plot. If you have 3 or more predictors, just chose two to plot for convenience. (7)
+    - Check assumptions of linearity, normality, and homoskedasticity either graphically or using a hypothesis test (3)
+    - Regardless, recompute regression results with robust standard errors via `coeftest(..., vcov=vcovHC(...))`. Discuss significance of results, including any changes from before/after robust SEs if applicable. (7)
+    - What proportion of the variation in the outcome does your model explain? (3)
+```{R}
+library(dplyr)
+library(lmtest)
+library(sandwich)
+
+WR2<-womensrole%>%mutate(y=ifelse(sex=="Male",1,0))
+WR2$education_c<-WR2$education-mean(WR2$education, na.rm=T)
+WR2$agree_c<-WR2$agree-mean(WR2$agree, na.rm=T)
+
+fit<-lm(disagree~education*agree, data=WR2)
+summary(fit)
+fit_c<-lm(disagree~education_c*agree_c, data=WR2)
+summary(fit_c)
+
+#Plotting the Interaction Plot, mean-centered
+ggplot(WR2, aes(x=education_c*agree_c, y=disagree))+geom_smooth(method="lm")
+
+#Checking assumptions of linearity and homoskedasticity
+resids<-fit$residuals
+fitvals<-fit$fitted.values
+ggplot()+geom_point(aes(fitvals, resids))+geom_hline(yintercept=0, color='red')
+bptest(disagree~education, data=WR2)
+bptest(disagree~agree, data=WR2)
+bptest(disagree~education*agree, data=WR2)
+
+#Checking for assumption of normality
+ggplot()+geom_histogram(aes(resids), bins=20)
+shapiro.test(resids)
+
+#Regression results with Robust Standard Errors
+coeftest(fit, vcov=vcovHC(fit))[,1:2]
+
+(sum((WR2$disagree-mean(WR2$disagree))^2)-sum(fit$residuals^2))/sum((WR2$disagree-mean(WR2$disagree))^2)
+```
+The new WR2 dataset that was created from the dataset womensrole had the variable sex changed to a binary variable Sex, where 1 indicated Male and 0 indicated Female. A linear regression of the response variable disagree, including the interaction between education and agreement was created. Both the education and the interaction variable of education with agreement gave positive slopes, where while controlling for disagreements, for every 1 unit increase of a person disagreeing with the statement, there are increases in education and the interaction variable; this supports the data, where as people increase their years of education, they are more likely to disagree with the statement, regardless of sex, and education and agreements are dependant on each other. The agree variable had a negative slope, where for every 1 unit increase of the disagree variable, there is a 2.324 unit decrease in people agreeing with the statement. All numeric variables, including the interaction variable, were then mean centered and another linear regression was created with these variables. Here, the mean centered education, agree, and interaction variable all had positive slopes. A ggplot was then created to observe the interaction plot with the response variable, and the trend seemed to be that as more people disagreed with the statement, regardless of sex, the mean-centered interaction variable became larger (negative slope). Another ggplot as well as a Breuch-Pagan test were also created to test the assumption of homoskedasticity. The ggplot tested residual values vs. fitted values of the linear regression, and the assumption of homoskedasticity seemed to fail. To further confirm the plot, a Breuch-Pagan test was run three times, with the response variables as well as the interaction. The disagree (response) variable tested against the education (predictor in this case) variable gave a p-value of less than 0.05, so the assumption of homoskedasticity was rejected. For the predictor variable tested against the agree variable and the interaction variable, their relative p-values were greater than 0.05, and we failed to reject the assumption of homoskedasticity in those cases. Linearity was also tested with the ggplot of the residuals vs the fitted values, where the assumption of linearity seemed to have been met. To test normality, a histogram and a Shapiro-Wilk test were created. When viewing the histogram, the assumption of normality appeared to not have been met, as the histogram did not give a relatively normal distribution of data. To formally test normality, the Shapiro-Wilk test was run on the residual values, where the p-value of these residuals was less than 0.05. This indicated that the assumption of normality of the data was rejected. The regression results were then computed again with the robust standard errors. In comparison to the original regression model, the coefficient values of the response and predictor variables as well as the interaction variable were the same, and the significance of the agree and interaction variables were still prevalent. The proportion of the variation that my model explains is about 0.8212, or 82.12%.
+
+
+- **4. (5 pts)** Rerun same regression model (with interaction), but this time compute bootstrapped standard errors. Discuss any changes you observe in SEs and p-values using these SEs compared to the original SEs and the robust SEs)
+```{R}
+#Running the same regression model with interaction and the mean-centered version
+fit<-lm(disagree~education*agree, data=WR2)
+summary(fit)
+fit_c<-lm(disagree~education_c*agree_c, data=WR2)
+summary(fit_c)
+
+#Creating Bootstrapped Standard Errors
+bootstrapSE<-function(x,n=5000){
+  means<-vector()
+  for(i in 1:n){
+    means[i]<-mean(sample(x,replace=T))
+  }
+  return(sd(means))
+}
+samp_distn<-replicate(5000, {
+  boot_dat<-boot_dat<-WR2[sample(nrow(WR2),replace=TRUE),]
+  fit<-lm(disagree~education_c*agree_c, data=boot_dat)
+  coef(fit)
+})
+
+#Bootstrapped Standard Errors that resample rows
+library(dplyr)
+samp_distn%>%t%>%as.data.frame%>%summarize_all(sd)
+
+#Regression with Normal Standard Errors
+coeftest(fit)[,1:2]
+#Regression results with Robust Standard Errors
+coeftest(fit, vcov=vcovHC(fit))[,1:2]
+```
+Bootstrapped Standard Errors were created, which focused on the regression model with the interaction, where the interaction variable and the prediction variables were mean centered. The first section was to create bootstrapped standard errors with the means of the bootstrapped standard errors, and the section after was to create general bootstrapped standard errors, where the mean centered variables were taken into account. In this new model, the interaction variable had a coefficient of 0.298. A bootstrap standard error analysis was then computed, where the coefficient of the interaction variable was 0.0514. Because these new SE values, both normal and robust, took the new mean centered response, predictor, and interaction variables into account, their estimate and standard error values were different than those that only took into account the normal response, predictor, and interaction variables. The mean centered model gave variables that had lower original and robust standard errors as compared to those seen in the normal model. It is visible that as the standard error value becomes larger, the test statistic will become smaller.
+
+- **5. (40 pts)** Perform a logistic regression predicting a binary categorical variable (if you don't have one, make/get one) from at least two explanatory variables (interaction not necessary). 
+
+    - Interpret coefficient estimates in context (10)
+    - Report a confusion matrix for your logistic regression (2)
+    - Compute and discuss the Accuracy, Sensitivity (TPR), Specificity (TNR), and Recall (PPV) of your model (5)
+    - Using ggplot, plot density of log-odds (logit) by your binary outcome variable (3)
+    - Generate an ROC curve (plot) and calculate AUC (either manually or with a package); interpret (10)
+    - Perform 10-fold (or repeated random sub-sampling) CV and report average out-of-sample Accuracy, Sensitivity, and Recall (10)
+```{R}
+library(dplyr)
+library(MASS)
+library(ggplot2)
+library(lmtest)
+
+
+#Making a Categorical Explanatory Variable
+WR2$athome<-WR2$education
+WR2$athome[c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28)] = "Yes"
+WR2$athome[c(11, 12, 13, 14, 15, 16, 17, 18, 19, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42)] = "No"
+
+
+#Logistic Regression
+rit<-glm(y~education+agree, data=WR2, family=binomial(link="logit"))
+coeftest(rit)
+
+#Confusion Matrix
+probrit<-predict(rit, type="response")
+predrit<-ifelse(probrit > 0.5, 1, 0)
+logit<-predict(rit)
+table(truth=WR2$y, prediction=predrit)%>%addmargins
+WR2$logit<-logit
+#Computing Accuracy
+(6+12)/42
+
+#Computing Sensitivity/Recall (TPR)
+12/21
+
+#Computing Specificity (TNR)
+6/21
+
+#Computing Precision (PPV)
+12/27
+
+#GG-Plot
+library(ggplot2)
+ggplot(WR2, aes(fill=sex, x=logit))+geom_density(alpha=0.3)
+
+#ROC plot and AUC
+library(plotROC)
+ROCplot<-ggplot(WR2)+geom_roc(aes(d=y, m=probrit), n.cuts=0)+geom_segment(aes(x=0, xend=1, y=0, yend=1), lty=2)+scale_x_continuous(limits=c(0,1))
+ROCplot
+calc_auc(ROCplot)
+
+#Repeated Random Sub-Sampling
+library(tidyverse); library(lmtest); library(MASS)
+
+WR3<-WR2%>%transmute(education=education, sex=sex, agree=agree, disagree=disagree, education_c=education_c, agree_c=agree_c, athome=athome, logit=logit, y=ifelse(sex=="Male",1,0))
+jit<-glm(y~athome+education,data=WR3,family="binomial")
+prob<-predict(jit,type="response")
+set.seed(1234)
+k=5 
+data1<-WR3[sample(nrow(WR3)),] 
+folds<-cut(seq(1:nrow(WR3)),breaks=k,labels=F) 
+diags<-NULL
+for(i in 1:k){
+ train<-data1[folds!=i,]
+ test<-data1[folds==i,]
+ truth<-test$y
+ hit<-glm(y~athome+education,data=train,family="binomial")
+ probs<-predict(hit,newdata = test,type="response")
+ diags<-rbind(diags,class_diag(probs,truth))
+}
+apply(diags, 2, mean)
+```
+The coefficient estimates computed were for the education and agree variables, the education coefficient was positive at 0.00049, and the agree variable was negative at -0.00339, based on the binary y variable that was created from the sex variable. The positive slope of education indicates that when going up one unit of y, education increases by 0.00049 units, and the negative slope of agree indicates that when going up one unit of y, agreement decreases by 0.00339 units. A confusion matrix was then computed based on the truth being the y variable, and the prediction being the predrit variable. Here, values of accuracy, sensitivity/recall (True Positive Rate), specificity (True Negative Rate), and precision were calculated. The accuracy of the data was about 0.4286, the sensitivity of the data was about 0.5714, the specificity of the data was about 0.2857, and the precision of the data was about 0.4444. A logit vs. density GG-plot was then created based off of Male and Female categories from the sex variable. Here, there was a large amount of overlap by the Male category over the Female cateogry, where both of these categories' logit scores were very similar to each other. An ROC curve was then generated, where much of the data fell below the line. To view this numerically, the AUC was calculated, which gave a value of about 0.4571. Because a 10-fold CV was too large for the data, a 5-fold CV was generated, which gave out-of-sample accuracy (about 0.5306), sensitivity/recall (about 0.6971), specificity (0.5000), and precision (about 0.5417) values.
+
+- **6. (10 pts)** Choose one variable you want to predict (can be one you used from before; either binary or continuous) and run a LASSO regression inputting all the rest of your variables as predictors. Choose lambda to give the simplest model whose accuracy is near that of the best (i.e., `lambda.1se`). Discuss which variables are retained. Perform 10-fold CV using this model: if response in binary, compare model's out-of-sample accuracy to that of your logistic regression in part 5; if response is numeric, compare the residual standard error (at the bottom of the summary output, aka RMSE): lower is better fit!
+```{R}
+library(glmnet)
+
+#Logistic Regression
+library(dplyr)
+womensrole$y<-as.factor(WR2$y)
+womensrole$sex<-NULL
+womensrole$athome<-NULL
+womensrole$agree_c<-NULL
+womensrole$athome<-WR2$athome
+womensrole$education_c<-NULL
+womensrole$agree<-as.numeric(as.character(womensrole$agree))
+yit<-lm(agree~disagree+education+y, data=womensrole)
+summary(yit)
+
+#LASSO on Data
+y<-as.matrix(womensrole$agree)
+model.matrix(yit)
+x<-model.matrix(yit)[,-1]%>%scale%>%as.matrix
+cv<-cv.glmnet(x,y)
+lasso<-glmnet(x,y,lambda=cv$lambda.1se)
+coef(lasso)
+
+#CV
+set.seed(1234)
+k=10
+data1<-womensrole[sample(nrow(womensrole)),]
+folds<-cut(seq(1:nrow(womensrole)),breaks=k,labels=F)
+diags<-NULL
+for(i in 1:k){
+ train<-data1[folds!=i,]
+ test<-data1[folds==i,]
+ truth<-test$agree
+ kit<-lm(agree~disagree+education,data=train)
+ probs<-predict(kit,newdata = test,type="response")
+ preds<-ifelse(probs>.5,1,0)
+ diags<-rbind(diags,class_diag(probs,truth))
+}
+#Residual Standard Error/RMSE Calculation
+library(caret)
+sigma(kit)
+summary(kit)
+```
+The variable that was predicted was the agree variable from the womensrole dataset; here, the womensrole dataset was used for consistency. From this a LASSO regression was run, which used the education, disagree, and y variables as predictors for the agree variable. Here, the variables that were retained were the disagree and education variables, which gave values of about 27.3010, and -2.2362, respectively. On this dataset, a 10-fold CV was able to be run, as the data was a smaller set. Because the response was numeric, a Residual Standard Error and an RMSE Calculation were done with the summary and sigma functions, respecitively. These calculations gave similar values of 19.49.

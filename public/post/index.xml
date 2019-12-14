@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Nyssa Berlanga</title>
+    <link>/post/</link>
+    <description>Recent content in Posts on Nyssa Berlanga</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Fri, 13 Dec 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Working with Python</title>
+      <link>/2019/12/13/pythonwork/</link>
+      <pubDate>Fri, 13 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/12/13/pythonwork/</guid>
+      <description>This semester, I had the privilege to work with the application Python after having learned more in depth tools about RStudio. Throughout my college career, I had only coded in R, and learning a new language that was more widely known by a larger group of people was exciting to me, as with more practice, I’d be able to build up my coding language in one that is more readily available to others.</description>
+    </item>
+    
+  </channel>
+</rss>

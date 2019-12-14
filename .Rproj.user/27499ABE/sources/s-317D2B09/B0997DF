@@ -1,0 +1,33 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1576274710949.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "B0997DF",
+    "lastKnownWriteTime" : 0,
+    "last_content_update" : 1576274710949,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "582A9A92",
+        "caption" : "dataNPI",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=dataNPI&cache_key=582A9A92",
+        "displayedObservations" : 11243,
+        "environment" : "",
+        "expression" : "dataNPI",
+        "object" : "dataNPI",
+        "preview" : 0,
+        "totalObservations" : 11243,
+        "variables" : 44
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

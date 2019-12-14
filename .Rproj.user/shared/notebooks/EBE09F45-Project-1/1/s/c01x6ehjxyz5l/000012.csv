@@ -1,0 +1,2 @@
+"0","firstnpitma2%>%filter(age> 15)%>%arrange(age, score.x, score.y)->firstnpitma3"
+"0","head(firstnpitma3)"

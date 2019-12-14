@@ -1,0 +1,95 @@
+---
+title: "Project 1"
+date: "10.20.19"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Nyssa Berlanga, npb439
+
+Introduction:
+The datasets chosen, that I originally abbreviated as "dataNPI", and "dataTMA", were two different types of personality tests, known as the Narcissistic Personality Inventory (NPI), and the Taylor Manifest Anxiety Scale (TMA), respectively. The NPI is based off of the trait narcissism, where a comparison to the Greek god Narcissus was used to introduce the study. This test aimed to measure this personality trait among people based off of a Narcissistic Personality Disorder highlighted in the Diagnostic and Statistical Manual of Mental Disorders (DSM-III); however, it is not an indicator of a mental illness. The TMA was used to measure the personality trait of anxiety and was sought to view people who would be ideal subjects for studies of anxiety; however, this test was also not meant to diagnose any type of anxiety disorder.
+In the NPI study, there were 40 different questions, where there were either answer choices of '1' or '2', and a '0' was indicated if no answer was given. The variables of gender were also used that indicated participants as either '0' as none, 1' as male, '2' as female, or '3' as other. Ages were also given in years, and the elapse variable was recorded as the time the participant submitted the test subtracted from the time the test was loaded. The score variable was also included, where the highest score was a 40. In the TMA study, similar variables were used, with 50 questions that were scored in the same was as the NPI was. Age and gender were also used and were documented in the same fashion. A score of 50 was the highest score for this variable. I find these two datasets interesting in that I have a great fascination for psychology measures and am currently taking an Abnormal Psychology course, where we are delving more into the topics of mental disorders and their diagnoses. I am expecting an association of high narcissism measures to low anxiety measures, that may be most prominent in females and in middle aged participants.
+
+```{r cars}
+#Creating Better Datasets
+dataNPI<-read.csv("/Users/Nyssa./Desktop/website/content/dataNPI.csv")
+dataTMA<-read.csv("/Users/Nyssa./Desktop/website/content/dataTMA.csv")
+library(dplyr)
+NPI<-dataNPI%>%mutate(gender=recode_factor(gender, '1'="male", 
+  '2'="female", '3'="other", '0'="none")) %>% select(gender, everything())
+npi<-NPI[-c(9814, 9905, 9924, 10003, 10146, 10221, 10297, 10414, 
+            10437, 10590, 10929, 11028, 11186, 10163, 10856, 9453, 8161,
+            8818, 7584, 8121, 8303, 8373, 8403, 8793, 8916, 9001, 9265,
+            9301, 9421, 9473, 9547, 9725, 9760, 9841, 9929, 9953, 10118,
+            10137, 10260, 10390, 10443, 10623, 10868, 11067, 11184, 
+            8356, 1272, 9154, 8063, 8269, 9228),]
+TMA<-dataTMA%>%mutate(gender=recode_factor(gender, '1'="male", 
+   '2'="female", '3'="other", '0'="none"))
+tma<-TMA[-c(3000, 2612, 1240, 4121),]
+```
+The first datasets were created from the raw data obtained from two datasets. To make observations more coherent, different datasets were also created by using the mutate and select dplyr functions. The final datasets in this code subset were created to delete certain ages, as the ages of the data that was deleted was too high or too low (e.g. 0 years old and 509 years old).
+```{R}
+#Creating Dataset Subsets and Joining
+firstnpi<-npi%>%head(500)
+firsttma<-tma%>%head(500)
+firstnpitma<-full_join(firstnpi, firsttma, by = c("gender","age"))
+```
+Because a combined dataset of the two dataset was too large, two different subsets were created. An inner join was created from these two subsets by gender and age, as the most relevant data would be those that had matches in both datasets. In this joined dataset, other values with ".x" belong to the firstnpi dataset, and those with ".y" belong to the firsttma dataset. 
+```{R}
+#Using Dplyr Functions
+firstnpitma%>%select(-"elapse")->firstnpitma2
+head(firstnpitma2)
+firstnpitma2%>%filter(age> 15)%>%arrange(age, score.x, score.y)->firstnpitma3
+head(firstnpitma3)
+firstnpitma4<-firstnpitma3%>%mutate(age2=ifelse(age<=20,"young",ifelse(20<age & age<40,"middle",ifelse(age>=40,"old",NA))))%>%na.omit()
+glimpse(firstnpitma4)
+firstnpitma5<- firstnpitma4%>%select(-starts_with("Q"))%>%group_by(gender,age2)
+
+#Generating Summary Statistics
+firstnpitma6<-firstnpitma5%>%group_by(gender,age2)%>%summarize(mean_age=mean(age,na.rm=T),mean_score.x=mean(score.x,na.rm=T),mean_score.y=mean(score.y,na.rm=T),sd_score.x=sd(score.x,na.rm=T), sd_score.y=sd(score.y,na.rm=T),median_age=median(age,na.rm=T),median_score.x=median(score.x,na.rm=T), median_score.y=median(score.y,na.rm=T), min_age=min(age,na.rm=T),min_score.x=min(score.x,na.rm=T), min_score.y=min(score.y,na.rm=T), max_age=max(age,na.rm=T), max_score.x=max(score.x,na.rm=T), max_score.y=max(score.y,na.rm=T), n=n(),n_age=n_distinct(age), n_score.x=n_distinct(score.x), n_score.y=n_distinct(score.y),n_age=n_distinct(age),cov_scores=cov(score.x,score.y),var_scores=var(score.x,score.y),cor_scores=cor(score.x,score.y))
+glimpse(firstnpitma6)
+```
+All dplyr functions were used to focus on the two categorical variables, gender and age2, where the age2 variable was added with the mutate function and other variables were taken out. The mean score in men was highest in young individuals, but was pretty consistent among females, indicating that generally, young men may display the most narcissistic qualities and because the mean score was higher in females than in males. Young females and males (females more than males) could be described as portraying the most anxiety-driven qualities mainly in the young age groups in relation to mean scores. The standard deviation values of all numeric variables were then obtained, which indicated that old male and female scores for both indices were furthest distributed from the mean. The median values were then taken across males and females to further analyze distributions in their scoring, which had results of higher median scores in young males in the first assessment and young females in the second assessment. In the minimum assessments of both males and females, it was interesting to see that more males than females in both assessments chose not to answer questions across "age2" groups, from the low score that was shown. A maximum summary statistic was then generate, where scores were relatively similar across genders and age groups. A count statistic displayed the total number of observations from each column, where the largest proprtion of males and females who took the tests were middle-aged. To view the count of unique numbers in each column, a count distinct summary statistic was generated, where the most distinct scores were represented in males and females of the middle age category. A covariance of male and female scores across both assessments gave different related numbers of the two assessments across genders, where there was a higher covariance in female data than in male data across age groups. The variance of the data across genders was also retrieved, where data was further spread out across the mean for females than males in each age group. A correlation matrix was then created with the "cor()" function for scores of both assessments across males and females in all three age categories, where correlations were very low, with the highest correlation for males was in the old age category and that of females was in the young age category.
+```{R}
+#Tidying Dataset from Mean Summary Statistics
+library(tidyr)
+library(tidyverse)
+firstnpitma7<-firstnpitma6%>%pivot_wider(names_from="age2", "gender",values_from="mean_score.x")
+firstnpitma8<-firstnpitma6%>%pivot_wider(names_from="age2", "gender", values_from="mean_score.y")
+glimpse(firstnpitma7)
+glimpse(firstnpitma8)
+```
+Tidying through the pivot_wider() function was done with the data from one summary statistic, mean scores, which was the most significant across genders and age categories. Tidying had to be done in two separate datasets, where the first one consisted of the mean score of the NPI across males and females in all three age categories, and tidying was done again with the TMA in the same manner as the prior dataset.
+```{R}
+#Creating First GG Plot
+ggplot(firstnpitma6, aes(x=firstnpitma6$age2, y=firstnpitma6$mean_score.x))+geom_bar(stat="summary",aes(fill=firstnpitma6$age2))+ geom_errorbar(stat="summary", width=0.4) + labs(x="Age Categories", y="Mean NPI Score")+scale_fill_discrete() +ggtitle("Mean NPI Scores vs. Age Categories") +scale_y_continuous(breaks=c(0,2,4,6,8,10,12,14,16,18))
+```
+A geom bar plot was created that compares the three age categories and their respective mean scores for the NPI, which was combined through both genders. The highest scores were prevalent in young individuals, which are those that are at most 20 years old, and lowest scores were prevalent in old individuals, which are those that are at least 40 years old. Error bars along with the stat="summary" function were added to the three bars, where the margin of error was greatest among youngest individuals, and middle and old aged individuals had similar sized error bars. Generally, across males and females, individuals that are aged 20 years old or less are most likely to portray narcissistic tendencies and individuals that are aged 40 years old or more are least likely to portray narcissistic tendencies.
+```{R}
+#Creating Second GG Plot
+ggplot(firstnpitma6, aes(x=firstnpitma6$age2, y=firstnpitma6$cor_scores))+ geom_point(stat="summary", fun.data='mean_se', aes(fill=firstnpitma6$age2), color="red", size=4)+ggtitle("Correlation Scores vs. Age Categories")+labs(x="Age Categories", y="Correlation Scores")
+```
+Another type of GG Plot was created that compared three different age groups in males and females and their corresponding correlations for both the NPI and TMA personality tests. Although these correlations are very small, correlations in old males and females were highest, and correlations in middle-aged males and females were lowest, across both tests. This trend generally displays the correlated measures in older-aged males and females, as they tended to have related scores. The trend in middle-aged males and females had different scores among both tests, meaning that their scores were not related. 
+```{R}
+#Creating a PCA
+library(dplyr)
+firstnpitma6%>%ungroup()%>%select(-age2,-gender)->numericnpitma
+numericnpitma2<-numericnpitma%>%select_if(is.numeric)%>%scale
+npitma_pca<-prcomp(numericnpitma2)
+summary(npitma_pca, rotation=T)
+npitma_pca$rotation
+eigvalnpitma<-npitma_pca$sdev^2
+npitmadf<-data.frame(PC1=npitma_pca$x[,1], PC2=npitma_pca$x[,2])
+npitmadf2<-data.frame(PC3=npitma_pca$x[,3], PC4=npitma_pca$x[,4])
+ggplot(npitmadf,aes(PC1, PC2))+geom_point()
+ggplot(npitmadf2,aes(PC3, PC4))+geom_point()
+npitma_pca$rotation[3:2,4:3]%>%as.data.frame%>%rownames_to_column%>%
+ggplot()+geom_hline(aes(yintercept=0),lty=2)+
+ geom_vline(aes(xintercept=0),lty=2)+ylab("PC4")+xlab("PC3")+
+ geom_segment(aes(x=0,y=0,xend=PC3,yend=PC4),arrow=arrow(),col="red")+
+ geom_label(aes(x=PC3*0.8,y=PC4,label=rowname))
+```
+To better analyze the covariance and variance of the data used, a Principal Component Analysis (PCA) was run. Numeric data was required to be used for this type of analysis, so a dataset "numericnpitma" was created to rid of all categorical data. A second dataset, "numericnpitma2" was created to properly scale this numeric data. The prcomp() function was then used on the second dataset and put in to create a new dataset, "npitma_pca". The different PCA scores were then analyzed through the summary and $rotation function, as a prcomp was used; here, the largest value was the sd_score.x in the PCA3 category. The PCAs that were kept were PCAs 1-4, as they all had Eigenvalues greater than 1. From here, two GG plots were created, one of PC2 vs. PC1 and the other of PC4 vs. PC3, where datasets "npitmadf", and "npitmadf2" were created, respectively. In the first GG Plot, values were scattered at all ends, so there were low variance and covariance. In the second GG Plot, values contained slightly more variance and covariance, as data points were closer to the two ends, in a cluster. Because of the closer variance and covariance of PC4 vs. PC3, another GG Plot was created to further analyze their similarities. In this GG Plot, the arrow of the mean score of the TMA was steeper than that of the NPI, which signifies that there is a smaller variance from the mean of the scores of the TMA than that of the mean of the scores of the NPI.

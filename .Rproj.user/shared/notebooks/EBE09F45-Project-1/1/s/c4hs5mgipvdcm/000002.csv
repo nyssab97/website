@@ -1,0 +1,2 @@
+"0","#Creating Second GG Plot"
+"0","ggplot(firstnpitma6, aes(x=firstnpitma6$age2, y=firstnpitma6$cor_scores))+ geom_point(stat=""summary"", fun.data='mean_se', aes(fill=firstnpitma6$age2), color=""red"", size=4)+ggtitle(""Correlation Scores vs. Age Categories"")+labs(x=""Age Categories"", y=""Correlation Scores"")"
