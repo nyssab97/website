@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1576355975990.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "14A27A4D",
+    "lastKnownWriteTime" : 1576364394,
+    "last_content_update" : 1576364394202,
+    "path" : "~/Desktop/website/content/2019-12-14-resume.Rmd",
+    "project_path" : "content/2019-12-14-resume.Rmd",
+    "properties" : {
+        "cursorPosition" : "15,0",
+        "scrollLine" : "2"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

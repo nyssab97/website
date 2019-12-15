@@ -1,0 +1,24 @@
+---
+title: Resume
+author: Nyssa Berlanga
+date: '2019-12-14'
+slug: resume
+categories: []
+tags: []
+description: 'Background Sketch'
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Education
+
+I am currently a 4th year senior at the University of Texas at Austin. Here, I am working to receive a Bachelors of Science and Arts (BSA Degree) in Biology, with a minor in Sociology. While being a student here, I have also taken at least one summer course every summer, whether it be from the UT Austin campus directly, or another college/university. I have also taken courses at the college campus that is closer to my hometown, which is called South Texas College. Here, I took various courses such as physics and government, which were credit transferred in to UT Austin. 
+#Interests
+
+Some of my interests and hobbies include meditation, watching television/movies, reading, shopping, dancing, singing, listening to music, and coloring in a coloring book.
+#Work/Volunteer Experience
+
+While in middle school and high school, I was able to get involved with various volunteering experiences, such as a medical education (MedEd) program that volunteered at a food bank, helping to plant trees with my high school's LEOs Club, and volunteering at my local hospital in my hometown, Doctor's Hospital at Renaissance. At UT Austin, I now have a part-time job as a tutor/grader at a Kumon center. 
+#Skills and Accomplishments
+
+While at UT I have been involved with many organizations, such as a bible study through the Austin Stone Community Church, a Christian sorority called Sigma Phi Lambda, and a national sorority called Sigma Delta Tau. In the latter two organizations, I held various leadership positions, such as a Prayer Group Leader and member in the first sorority, and a Standards Board member in the second sorority. Within my schooling experience, I was able to become Microsoft Office certified in a previous edition, I was able to get CPR certified, and I am now able to say I have been exposed to various coding languages R, LaTeX, and Python.

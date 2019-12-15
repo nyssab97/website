@@ -6,10 +6,19 @@
     <description>Recent content on Nyssa Berlanga</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Fri, 13 Dec 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 14 Dec 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Resume</title>
+      <link>/resume/</link>
+      <pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/resume/</guid>
+      <description>I am currently a 4th year senior at the University of Texas at Austin. Here, I am working to receive a Bachelors of Science and Arts (BSA Degree) in Biology, with a minor in Sociology. While being a student here, I have also taken at least one summer course every summer, whether it be from the UT Austin campus directly, or another college/university. I have also taken courses at the college campus that is closer to my hometown, which is called South Texas College.</description>
+    </item>
     
     <item>
       <title>New to Working with Python</title>

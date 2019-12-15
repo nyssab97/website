@@ -1,4 +1,0 @@
-"0","#Creating Dataset Subsets and Joining"
-"0","firstnpi<-npi%>%head(500)"
-"0","firsttma<-tma%>%head(500)"
-"0","firstnpitma<-full_join(firstnpi, firsttma, by = c(""gender"",""age""))"
